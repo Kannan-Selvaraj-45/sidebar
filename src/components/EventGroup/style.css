@@ -1,0 +1,22 @@
+.events-ul {
+  width: 100%;
+
+  height: auto;
+}
+.event-item {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  font-size: 12px;
+ margin-bottom: 5px;
+}
+.item-data {
+  width: 33%;
+   border-bottom: 1px solid #eeeeee;
+   border-right: 1px solid #eeeeee;
+   border-left: 1px solid #eeeeee;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

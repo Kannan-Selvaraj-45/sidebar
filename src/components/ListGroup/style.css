@@ -1,0 +1,75 @@
+.list-item {
+  background-color: #f9f9f9;
+  border: 1px solid;
+  color: #202020bc;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  margin: 4px 0px 4px 0px;
+  border: 0px;
+}
+.list-item:hover {
+  background-color: #ccc;
+  cursor: pointer;
+}
+.icon-active {
+  color: blue !important;
+}
+.list-item:hover .icon-plus {
+  color: blue;
+}
+input[type="checkbox"] {
+  transform: scale(1.4);
+}
+.checkBox {
+  margin: 10px;
+}
+.list-text-container {
+  width: 80%;
+}
+.list-text {
+  font-size: 13px;
+}
+.list-text-active{
+  color: rgba(0, 0, 0, 0.748);
+  font-weight: 600;
+  font-size: 15px;
+}
+.icon-plus {
+  color: #77777766;
+  margin-right: 12px;
+}
+.icon-plus:hover {
+  color: #2c82d8;
+}
+.icon-dot {
+  color: #000;
+  width: 20px;
+}
+.icon-dot:hover {
+  background-color: #77777766;
+}
+.dropdown-content {
+  color: #000;
+}
+.list-item-sub {
+  background-color: #ffff;
+  border: 1px solid;
+  color: #202020bc;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  margin: 4px 0px 4px 0px;
+  border: 0px;
+}
+.list-item-sub:hover {
+  background-color: #ccc;
+}
+.icon-new-dot {
+  color: #77777766;
+  width: 20px;
+}
+.list-item-text{
+  color: grey;
+  font-size: 12px;
+}
