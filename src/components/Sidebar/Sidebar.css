@@ -36,7 +36,7 @@
 }
 .list-group-container {
   background-color: #fff;
-  height: 100vh;
+  height: 90vh;
   /* max-height: 465px; */
   overflow-y: auto;
 }
@@ -291,20 +291,10 @@ input[type="checkbox"] {
   font-size: 14px;
   height: 40px;
 }
-.hider-bg-container {
-  color: red;
-  position: relative;
-  width: 10%;
-  height: 10%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  background-color: #ddd;
-}
+ 
 .nav-container {
   position: absolute;
-  bottom: 20px;
+  bottom: 13px;
   left: 0;
   height: 95vh;
   width: 330px;
@@ -316,13 +306,12 @@ input[type="checkbox"] {
   overflow-y: hidden;
   max-height: 97vh;
   min-height: 24px;
-   
-  
 }
 .nav-container.collapsed {
   height: 20px !important;
   transition: height 0.4s ease;
 }
-.hv:hover{
+ 
+.hv:hover {
   cursor: pointer;
 }
