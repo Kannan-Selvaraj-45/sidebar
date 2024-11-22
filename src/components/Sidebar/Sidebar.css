@@ -15,7 +15,6 @@
   padding: 0;
   margin: 0;
 }
-
 .drag-handle {
   display: flex;
   justify-content: center;
@@ -26,7 +25,6 @@
   cursor: grab;
   border-bottom: 1px solid #ddd;
 }
-
 .nav-bar {
   display: flex;
   list-style: none;
@@ -37,7 +35,6 @@
 .list-group-container {
   background-color: #fff;
   height: 90vh;
-  /* max-height: 465px; */
   overflow-y: auto;
 }
 .list-group-container::-webkit-scrollbar {
@@ -291,13 +288,14 @@ input[type="checkbox"] {
   font-size: 14px;
   height: 40px;
 }
- 
 .nav-container {
   position: absolute;
-  bottom: 13px;
+  top: auto;
+  bottom: 13px !important;
   left: 0;
   height: 95vh;
-  width: 330px;
+  max-width: 320px;
+  min-width: 320px;
   border: 1px solid #ddd;
   background-color: #ffffff;
   color: #333;
@@ -311,7 +309,6 @@ input[type="checkbox"] {
   height: 20px !important;
   transition: height 0.4s ease;
 }
- 
 .hv:hover {
   cursor: pointer;
 }
