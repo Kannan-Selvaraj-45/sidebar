@@ -5,21 +5,13 @@ import { useState, useEffect } from "react";
 import Draggable from "react-draggable";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faPlus,
-  faMinus,
   faEllipsisVertical,
   faAngleDown,
   faAngleUp,
 } from "@fortawesome/free-solid-svg-icons";
-import { GiTruck } from "react-icons/gi";
-import { FaTruckMonster } from "react-icons/fa";
+import { FaTruckMoving } from "react-icons/fa6";
 import { FaSearch } from "react-icons/fa";
 import { GripHorizontal } from "lucide-react";
-
-const tabsList = [
-  { tabId: "ALL", displayText: "All" },
-  { tabId: "OBJECTS", displayText: "GROUP" },
-];
 
 const tabContentList = [
   {
@@ -43,118 +35,18 @@ const tabContentList = [
     listId: 3,
     category: "ALL",
     subList: ["AP02UB8526"],
-  },{
+  },
+  {
     listId: 4,
     category: "ALL",
     subList: ["KL01EB8526"],
-  },{
+  },
+  {
     listId: 5,
     category: "ALL",
     subList: ["MP02TW526"],
   },
 ];
-
-const ListGroupItem = ({ listDetails, searchTerm, isAllCategory }) => {
-  const { category, text, subList } = listDetails;
-
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [filteredSubList, setFilteredSubList] = useState(subList);
-
-  const toggleDropdown = () => {
-    if (!isAllCategory || category === "OBJECTS") {
-      setIsDropdownOpen((prevState) => !prevState);
-    }
-  };
-
-  useEffect(() => {
-    const filtered = subList.filter((item) =>
-      item.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredSubList(filtered);
-  }, [searchTerm, subList]);
-
-  const renderMainList = () => {
-    if (isAllCategory) return null;  
-    
-    const isVisible =
-      text?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      filteredSubList.length > 0;
-
-    if (!isVisible) return null;
-
-    return (
-      <li className="list-item">
-        <div
-          className={`list-text-container ${
-            isDropdownOpen ? "list-text-active" : ""
-          }`}
-          onClick={toggleDropdown}
-        >
-          {text}
-        </div>
-
-        {category === "OBJECTS" && (
-          <FontAwesomeIcon
-            icon={isDropdownOpen ? faMinus : faPlus}
-            className={`icon-plus ${isDropdownOpen ? "icon-active" : ""}`}
-            onClick={toggleDropdown}
-          />
-        )}
-        <FontAwesomeIcon icon={faEllipsisVertical} className="icon-dot" />
-      </li>
-    );
-  };
-
-  const renderSublistItems = () => {
-    return (
-      <div className="dropdown-content">
-        <ul>
-          {filteredSubList.map((item, index) => (
-            <li key={index} className="list-item-sub">
-              <div className="list-text-container list-item-text">{item}</div>
-              <GiTruck className="truck-icon" />
-              <FontAwesomeIcon
-                icon={faEllipsisVertical}
-                className="icon-new-dot"
-              />
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
-  };
-
-  const renderAllSublistItems = () => {
-    return (
-      <ul>
-        {filteredSubList.map((item, index) => (
-          <li key={index} className="list-item">
-            <div className="list-text-container list-item-text">{item}</div>
-            <FaTruckMonster className="truck-icon" />
-            <FontAwesomeIcon
-              icon={faEllipsisVertical}
-              className="icon-new-dot"
-            />
-          </li>
-        ))}
-      </ul>
-    );
-  };
-
-  return (
-    <>
-      {isAllCategory ? (
-        renderAllSublistItems()
-      ) : (
-        <>
-          {renderMainList()}
-          {isDropdownOpen && renderSublistItems()}
-        </>
-      )}
-    </>
-  );
-};
-
 
 const ModernDropdown = ({ options, value, onChange }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -180,8 +72,11 @@ const ModernDropdown = ({ options, value, onChange }) => {
   return (
     <div className="modern-dropdown">
       <div className="dropdown-header" onClick={() => setIsOpen(!isOpen)}>
-        {options.find((option) => option.tabId === value)?.displayText}{" "}
-        <FontAwesomeIcon icon={isOpen ? faAngleUp : faAngleDown} />{" "}
+        {options.find((option) => option.tabId === value)?.displayText}
+        <FontAwesomeIcon
+          className="dropdown-control-icon"
+          icon={isOpen ? faAngleUp : faAngleDown}
+        />
       </div>
 
       {isOpen && (
@@ -204,28 +99,49 @@ const ModernDropdown = ({ options, value, onChange }) => {
 };
 
 const Sidebar = () => {
-  const [activeTab, setActiveTab] = useState(tabsList[0].tabId);
+  const [selectedText, setSelectedText] = useState("ALL");
   const [searchTerm, setSearchTerm] = useState("");
+  const [collapse, setCollapse] = useState(false);
 
-  const changeTabId = (id) => {
-    setActiveTab(id);
+  const dropdownOptions = [
+    { tabId: "ALL", displayText: "All" },
+    ...tabContentList
+      .filter((item) => item.text)
+      .map((item) => ({
+        tabId: item.text,
+        displayText: item.text,
+      })),
+  ];
+
+  const handleDropdownChange = (tabId) => {
+    setSelectedText(tabId);
   };
-
-  const filterTabDetails = tabContentList.filter(
-    (eachList) => eachList.category === activeTab
-  );
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
 
-  const [collapse, setCollapse] = useState(false);
   const handleCollapse = () => {
     setCollapse(!collapse);
   };
 
+  const filteredSubLists =
+    selectedText === "ALL"
+      ? tabContentList.flatMap((item) =>
+          item.subList.filter((sub) =>
+            sub.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+        )
+      : tabContentList
+          .filter((item) => item.text === selectedText)
+          .flatMap((item) =>
+            item.subList.filter((sub) =>
+              sub.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+          );
+
   return (
-    <Draggable>
+    <Draggable bounds="html">
       <div
         className={`nav-container ${collapse ? "collapsed" : ""}`}
         style={{
@@ -239,9 +155,11 @@ const Sidebar = () => {
             <FontAwesomeIcon icon={faAngleUp} />
           )}
         </div>
+
         <div className="drag-handle" aria-label="Drag to move sidebar">
           <GripHorizontal size={20} />
         </div>
+
         <div className="search-filter-container">
           <div className="search-input-container">
             <FaSearch className="search" />
@@ -254,40 +172,26 @@ const Sidebar = () => {
             />
           </div>
           <ModernDropdown
-            options={tabsList}
-            value={activeTab}
-            onChange={changeTabId}
+            options={dropdownOptions}
+            value={selectedText}
+            onChange={handleDropdownChange}
           />
         </div>
 
-        {activeTab === "OBJECTS" && (
-          <ul className="list-group-container">
-            <ul className="scroll-container">
-              {filterTabDetails.map((eachGroup) => (
-                <ListGroupItem
-                  key={eachGroup.listId}
-                  listDetails={eachGroup}
-                  searchTerm={searchTerm}
-                  isAllCategory={false}
+        <ul className="list-group-container">
+          <ul className="scroll-container">
+            {filteredSubLists.map((sub, index) => (
+              <li key={index} className="list-item-sub">
+                <div className="list-text-container list-item-text">{sub}</div>
+                <FaTruckMoving className="truck-icon" />
+                <FontAwesomeIcon
+                  icon={faEllipsisVertical}
+                  className="icon-new-dot"
                 />
-              ))}
-            </ul>
+              </li>
+            ))}
           </ul>
-        )}
-        {activeTab === "ALL" && (
-          <ul className="list-group-container">
-            <ul className="scroll-container">
-              {tabContentList.map((eachGroup) => (
-                <ListGroupItem
-                  key={eachGroup.listId}
-                  listDetails={eachGroup}
-                  searchTerm={searchTerm}
-                  isAllCategory={true}
-                />
-              ))}
-            </ul>
-          </ul>
-        )}
+        </ul>
       </div>
     </Draggable>
   );
