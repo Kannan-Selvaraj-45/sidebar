@@ -4,47 +4,89 @@ import "./index.css";
 import { useState, useEffect } from "react";
 import Draggable from "react-draggable";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faEllipsisVertical,
-  faAngleDown,
-  faAngleUp,
-} from "@fortawesome/free-solid-svg-icons";
-import { FaTruckMoving } from "react-icons/fa6";
+import { faAngleDown, faAngleUp } from "@fortawesome/free-solid-svg-icons";
+import { CiCircleChevDown, CiCircleChevUp } from "react-icons/ci";
 import { FaSearch } from "react-icons/fa";
 import { GripHorizontal } from "lucide-react";
 
 const tabContentList = [
   {
     listId: 0,
-    category: "OBJECTS",
-    text: "MAHARASTRA",
-    subList: ["TS06UB7174", "TN52B5812", "MH40CM0912"],
+    group: "MAHARASTRA",
+    subList: [
+      {
+        vehicle: "TS06UB7174",
+        status: "Active",
+        address: "MAHARASTRA",
+        location: "NH48, Vajarahalli, Dabaspete, Bangalore Rural, KA",
+      },
+      {
+        vehicle: "TN52B5812",
+        status: "InActive",
+        address: "MAHARASTRA",
+        location: "Nileri, Devanahalli TK ,Banglore Rural, KA",
+      },
+      {
+        vehicle: "MH40CM0912",
+        status: "Disconneted",
+        address: "MAHARASTRA",
+        location: "Old Madras Rd, Tavarekere, Hosakote TK, Kolar Dt, KA",
+      },
+    ],
   },
   {
     listId: 1,
-    category: "OBJECTS",
-    text: "SANKARI",
-    subList: ["TN06UB8526", "KL07CA4142", "TS06UB8966"],
+    group: "SANKARI",
+    subList: [
+      {
+        vehicle: "TN06UB8526",
+        status: "InActive",
+        address: "SANKARI",
+        location: "Nileri, Devanahalli TK, Banglore Rural, KA",
+      },
+      {
+        vehicle: "KL07CA4142",
+        status: "Active",
+        address: "SANKARI",
+        location: "Old Madras Rd, Tavarekere, Hosakote TK, Kolar Dt, KA",
+      },
+      {
+        vehicle: "TS06UB8966",
+        status: "Disconneted",
+        address: "SANKARI",
+        location: "Nileri, Devanahalli TK, Banglore Rural, KA",
+      },
+    ],
   },
   {
     listId: 2,
-    category: "ALL",
-    subList: ["TL05UB8526"],
+    subList: [
+      {
+        vehicle: "TL05UB8526",
+        status: "Active",
+        location: "NH48,Vajarahalli, Dabaspete, Bangalore Rural, KA",
+      },
+    ],
   },
   {
     listId: 3,
-    category: "ALL",
-    subList: ["AP02UB8526"],
+    subList: [
+      {
+        vehicle: "AP02UB8526",
+        status: "InActive",
+        location: "NH48, Vajarahalli, Dabaspete, Bangalore Rural, KA",
+      },
+    ],
   },
   {
     listId: 4,
-    category: "ALL",
-    subList: ["KL01EB8526"],
-  },
-  {
-    listId: 5,
-    category: "ALL",
-    subList: ["MP02TW526"],
+    subList: [
+      {
+        vehicle: "KL01EB8526",
+        status: "Active",
+        location: "Old Madras Rd, Tavarekere, Hosakote TK, Kolar Dt, KA",
+      },
+    ],
   },
 ];
 
@@ -104,12 +146,12 @@ const Sidebar = () => {
   const [collapse, setCollapse] = useState(false);
 
   const dropdownOptions = [
-    { tabId: "ALL", displayText: "All" },
+    { tabId: "ALL", displayText: "ALL" },
     ...tabContentList
-      .filter((item) => item.text)
+      .filter((item) => item.group)
       .map((item) => ({
-        tabId: item.text,
-        displayText: item.text,
+        tabId: item.group,
+        displayText: item.group,
       })),
   ];
 
@@ -129,16 +171,31 @@ const Sidebar = () => {
     selectedText === "ALL"
       ? tabContentList.flatMap((item) =>
           item.subList.filter((sub) =>
-            sub.toLowerCase().includes(searchTerm.toLowerCase())
+            sub.vehicle.toLowerCase().includes(searchTerm.toLowerCase())
           )
         )
       : tabContentList
-          .filter((item) => item.text === selectedText)
+          .filter((item) => item.group === selectedText)
           .flatMap((item) =>
             item.subList.filter((sub) =>
-              sub.toLowerCase().includes(searchTerm.toLowerCase())
+              sub.vehicle.toLowerCase().includes(searchTerm.toLowerCase())
             )
           );
+
+  const getStatusBackgroundColor = (status) => {
+    switch (status) {
+      case "Active":
+        return "#49A74D";
+      case "InActive":
+        return "#808080";
+      case "Disconneted":
+        return "#E23D43";
+      default:
+        return "#6c757d";
+    }
+  };
+
+  const [dot, setDot] = useState(false);
 
   return (
     <Draggable bounds="html">
@@ -182,12 +239,50 @@ const Sidebar = () => {
           <ul className="scroll-container">
             {filteredSubLists.map((sub, index) => (
               <li key={index} className="list-item-sub">
-                <div className="list-text-container list-item-text">{sub}</div>
-                <FaTruckMoving className="truck-icon" />
-                <FontAwesomeIcon
-                  icon={faEllipsisVertical}
-                  className="icon-new-dot"
-                />
+                <div
+                  className="speed-background"
+                  style={{
+                    backgroundColor: getStatusBackgroundColor(sub.status),
+                  }}
+                >
+                  <img
+                    src="https://app.ktt.io/images/AssetIcons/TRAILER/8W%20Trailer%20S2.svg"
+                    width={50}
+                    height={50}
+                  />
+                  <p
+                    style={{
+                      color: "white",
+                      fontSize: "11px",
+                    }}
+                  >
+                    {sub.status.toUpperCase()}
+                  </p>
+                </div>
+                <div className="list-container">
+                  <div className="list-text-container ">
+                    <p className="sub-text">{sub.vehicle}</p>
+                    <div className="address-location-container">
+                      {sub.address && (
+                        <span className="sub-address">{sub.address}</span>
+                      )}
+                    </div>
+                    {sub.location && dot && (
+                      <span className="sub-location">{sub.location}</span>
+                    )}
+                  </div>
+                </div>
+                {!dot ? (
+                  <CiCircleChevDown
+                    className="dot"
+                    onClick={() => setDot(!dot)}
+                  />
+                ) : (
+                  <CiCircleChevUp
+                    className="dot"
+                    onClick={() => setDot(!dot)}
+                  />
+                )}
               </li>
             ))}
           </ul>
